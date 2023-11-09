@@ -1,23 +1,24 @@
 <?php 
 include'./header.php';
 $role = $_SESSION['role'];
-if((int)$role == 1) {
-    $applications = $db->getAllNewApplications();
-}else if((int)$role == 2) {
-    $applications = $db->getFirstAwaitingApplications();
-}else if((int)$role == 4) {
-    $previous = 'sup'.((int)$role - 1);
-    $next = 'sup'.$role;
-    $applications = $db->getDirectAwaitingApplications($previous, $next);
-}else if((int)$role == 5) {
-    $previous = 'sup'.((int)$role - 1);
-    $next = 'sup'.$role;
-    $applications = $db->getFinalDirectAwaitingApplications($previous, $next);
-} else {
-    $previous = 'sup'.((int)$role - 1);
-    $next = 'sup'.$role;
-    $applications = $db->getAwaitingApplications($previous, $next);
-}
+$applications = $db->getAllNewApplications($role);
+// if((int)$role == 1) {
+    
+// }else if((int)$role == 2) {
+//     $applications = $db->getFirstAwaitingApplications();
+// }else if((int)$role == 4) {
+//     $previous = 'sup'.((int)$role - 1);
+//     $next = 'sup'.$role;
+//     $applications = $db->getDirectAwaitingApplications($previous, $next);
+// }else if((int)$role == 5) {
+//     $previous = 'sup'.((int)$role - 1);
+//     $next = 'sup'.$role;
+//     $applications = $db->getFinalDirectAwaitingApplications($previous, $next);
+// } else {
+//     $previous = 'sup'.((int)$role - 1);
+//     $next = 'sup'.$role;
+//     $applications = $db->getAwaitingApplications($previous, $next);
+// }
 ?>
 
 <!-- Content Wrapper. Contains page content -->
@@ -62,6 +63,7 @@ if((int)$role == 1) {
                                             $ii = 0;
                                         foreach ($applications as $rows) {
                                             $ii += 1;
+                                            $statusResponse = $db->applicationStatus($rows);
                                             ?>
                                             <tr>
                                                 <td><?php echo $ii . '.'; ?></td>
@@ -69,17 +71,24 @@ if((int)$role == 1) {
                                                 <td><?php echo $rows['staff_name']; ?></td>
                                                 <td><?php echo $rows['tender']; ?></td>
                                                 <td><?php echo date('d M, Y', strtotime($rows['date'])); ?></td>
-                                                <td>
-                                                    <?= $db->applicationStatus($rows); ?>
+                                                <td style="color: <?= $statusResponse->status == 1 ? 'green' : 'red' ?>">
+                                                    <?= $statusResponse->status == 1 ? 'Aproved' : 'Waiting for approval'; ?>
                                                 </td>
                                                 <td>
-                                                    <?= $db->applicationProgress($rows); ?>
+                                                    <?= $db->office($statusResponse->office); ?>
                                                 </td>
                                                 <td>
                                                     <div class="d-flex align-items-center justify-content-between">
+                                                        <?php
+                                                            if($statusResponse->office == $role && $statusResponse->status == 0) {
+                                                                ?>
+                                                                <a class="btn btn-success btn-sm" href="approve_application.php?id=<?= $statusResponse->id ?>" onclick="return confirm('Are you sure to approve this request')">Approve</a>
+                                                                <?php
+                                                            } 
+                                                        ?>
                                                         <a href="print_application.php?id=<?= $rows['id'] ?>" target="_blank" class="btn btn-success-light btn-sm <?= $db->isApproved($rows) == true ? '' : 'hide' ?>">Print</a>
                                                         <a class="btn btn-danger-light btn-sm <?= $role > 1 || $db->isApproved($rows) == true ? 'hide' : '' ?>" style="margin-right: 5px;" href="delete_application.php?id=<?= $rows['id'] ?>" onclick="return confirm('Are you sure to Drop this Request')">Drop</a>
-                                                        <a class="btn btn-info-light btn-sm" href="view_application.php?id=<?= $rows['id'] ?>">View</a>
+                                                        <!-- <a class="btn btn-info-light btn-sm" href="view_application.php?id=<?= $rows['id'] ?>">View</a> -->
                                                     </div>
                                                 </td>
                                             </tr>

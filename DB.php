@@ -16,7 +16,6 @@ class DB
 
     public function connect()
     {
-
         if (!$this->con) {
             $pdo = new PDO('mysql:host=localhost;dbname=fmoaproc_pcure', 'root', '');
             $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, FALSE);
@@ -86,8 +85,8 @@ class DB
     public function saveApplication()
     {
         $this->params = $this->getParameter();
-        $Query = $this->con->prepare("INSERT INTO `application`(`file_no`, `staff_name`, `email`, `phone`, `attachment`, `tender`, `mood`, `staffId`, `status`, `sup2`, `sup3`, `sup4`, `sup5`) "
-            . "VALUES (:file_no, :staff_name, :email, :phone, :attachment, :tender, :mood, :staffId, :status, :sup2, :sup3, :sup4, :sup5)");
+        $Query = $this->con->prepare("INSERT INTO `application`(`file_no`, `staff_name`, `email`, `phone`, `attachment`, `tender`, `mood`, `staffId`, `status`) "
+            . "VALUES (:file_no, :staff_name, :email, :phone, :attachment, :tender, :mood, :staffId, :status)");
         $Query->execute($this->params);
         // Check if the INSERT was successful
         if ($Query) {
@@ -99,6 +98,16 @@ class DB
         }
     }
 
+    public function saveApprovalOnApply($office)
+    {
+        $this->params = $this->getParameter();
+        $Query = $this->con->prepare("INSERT INTO `approval`(`appId`, `office`) "
+            . "VALUES (:appId, :office)");
+        $Query->execute($office);
+        // Check if the INSERT was successful
+        return $Query ? true : false;
+    }
+
     public function saveReaplly()
     {
         $this->params = $this->getParameter();
@@ -107,11 +116,32 @@ class DB
         return $Query ? true : false;
     }
 
-    public function getAllNewApplications()
+    public function getAttendanceApprovalState($appId)
     {
-        $Query = $this->con->prepare("SELECT * FROM `application` WHERE `status` <= 1");
-        $Query->execute();
-        return $Query->fetchAll(PDO::FETCH_ASSOC);
+        $Query = $this->con->prepare("SELECT * FROM `approval` WHERE `appId` = :appId AND `status` < 1 LIMIT 1");
+        $Query->execute(['appId' => $appId]);
+        // Fetch the first matching record as an object
+        $result = $Query->fetch(PDO::FETCH_OBJ);
+        // Check if $result is false (no matching record)
+        if (!$result) {
+            return (object)['status' => 1, 'office' => '10'];
+        }
+
+        // Return the result
+        return $result;
+    }
+
+    public function getAllNewApplications($role)
+    {
+        $Query = $this->con->prepare("SELECT application.* 
+    FROM application 
+    LEFT JOIN approval ON application.id = approval.appId 
+    WHERE application.status <= 1 AND approval.office = :office");
+
+        $Query->execute(['office' => $role]);
+        $result = $Query->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result;
     }
 
     public function getNewApplications($previous, $next)
@@ -239,10 +269,10 @@ class DB
         return $Query ? true : false;
     }
 
-    public function approveApplication($field)
+    public function approveApplication()
     {
         $this->params = $this->getParameter();
-        $Query = $this->con->prepare("UPDATE `application` SET $field = 1 WHERE `id`=:id");
+        $Query = $this->con->prepare("UPDATE `approval` SET `status` = 1 WHERE `id`=:id");
         $Query->execute($this->params);
         return $Query ? true : false;
     }
@@ -261,44 +291,58 @@ class DB
 
     public function applicationStatus($info)
     {
-        if ($info['sup2'] == false && $info['mood'] != 1 && (int)$info['status'] < 1) {
-            return "STAGE 1";
-        } else if ($info['sup4'] == false && $info['mood'] == 1 && (int)$info['status'] < 1) {
-            return "STAGE 3";
-        } else if ($info['sup2'] != false && $info['sup3'] == false && (int)$info['status'] < 1) {
-            return "STAGE 2";
-        } else if ($info['sup3'] != false && $info['sup4'] == false && (int)$info['status'] < 1) {
-            return "STAGE 3";
-        } else if ($info['sup4'] != false && $info['sup5'] == false && (int)$info['status'] < 1) {
-            return "STAGE 4";
-        } else if ((int)$info['status'] == 1) {
-            return '<span style="color: red;">Rejected</span>';
-        } else {
-            return '<span style="color: green;">Approved</span>';
-        }
+        return $this->getAttendanceApprovalState($info['id']);
+        // if ($info['sup2'] == false && $info['mood'] != 1 && (int)$info['status'] < 1) {
+        //     return "STAGE 1";
+        // } else if ($info['sup4'] == false && $info['mood'] == 1 && (int)$info['status'] < 1) {
+        //     return "STAGE 3";
+        // } else if ($info['sup2'] != false && $info['sup3'] == false && (int)$info['status'] < 1) {
+        //     return "STAGE 2";
+        // } else if ($info['sup3'] != false && $info['sup4'] == false && (int)$info['status'] < 1) {
+        //     return "STAGE 3";
+        // } else if ($info['sup4'] != false && $info['sup5'] == false && (int)$info['status'] < 1) {
+        //     return "STAGE 4";
+        // } else if ((int)$info['status'] == 1) {
+        //     return '<span style="color: red;">Rejected</span>';
+        // } else {
+        //     return '<span style="color: green;">Approved</span>';
+        // }
     }
 
 
     public function applicationProgress($info)
     {
-        if ($info['sup2'] == false && ($info['mood'] != 1)) {
-            return "File currently in rectory office";
-        } else if ($info['sup2'] != false && $info['sup3'] == false && ($info['mood'] != 1)) {
-            return "File currently in registry office";
-        } else if ($info['sup3'] != false && $info['sup4'] == false && ($info['mood'] != 1)) {
-            return "File currently in bursery office";
-        } else if ($info['sup4'] != false && $info['sup5'] == false && $info['mood'] != 1) {
-            return "File currently in Director acadamic planing";
-        } else if ($info['sup2'] == false && $info['mood'] == 1) {
-            return "Rectory office only";
-        } else {
-            return "Approved";
-        }
+        return $this->getAttendanceApprovalState($info['id']);
+        // if ($info['sup2'] == false && ($info['mood'] != 1)) {
+        //     return "File currently in rectory office";
+        // } else if ($info['sup2'] != false && $info['sup3'] == false && ($info['mood'] != 1)) {
+        //     return "File currently in registry office";
+        // } else if ($info['sup3'] != false && $info['sup4'] == false && ($info['mood'] != 1)) {
+        //     return "File currently in bursery office";
+        // } else if ($info['sup4'] != false && $info['sup5'] == false && $info['mood'] != 1) {
+        //     return "File currently in Director acadamic planing";
+        // } else if ($info['sup2'] == false && $info['mood'] == 1) {
+        //     return "Rectory office only";
+        // } else {
+        //     return "Approved";
+        // }
+    }
+
+    public function office($num)
+    {
+        return [
+            "1" => 'File currently in Rector office',
+            "2" => 'File currently in Registra office',
+            "3" => 'File currently in Burser office',
+            "4" => 'File currently in Director Acadamic Planing office',
+            "10" => "Finished and File Returned main office"
+        ][$num];
     }
 
     public function isApproved($info)
     {
-        if ($info['sup4'] != false && $info['sup5'] != false) {
+        $approval = $this->getAttendanceApprovalState($info['id']);
+        if ($approval == "approved") {
             return true;
         } else {
             return false;

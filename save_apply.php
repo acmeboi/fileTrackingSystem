@@ -15,12 +15,8 @@
         'tender' => $formData['tender'], 
         'mood' => $formData['mood'], 
         'staffId' => $staffId, 
-        'status' => 0, 
-        'sup2' => property_exists((object)$formData, 'rectory') ? 1 : 0, 
-        'sup3' => property_exists((object)$formData, 'registry') ? 1 : 0, 
-        'sup4' => property_exists((object)$formData, 'bursery') ? 1 : 0, 
-        'sup5' => property_exists((object)$formData, 'directo_acadamic_planing') ? 1 : 0
-    ];
+        'status' => 0,
+    ]; 
     
     $attachment = './uploads/'.$formData['file_no'].date('H:i:s') .'_'.$_FILES['attachment']['name'];
     $staffData['attachment'] = $attachment;
@@ -28,7 +24,11 @@
     $db->setParameter($staffData);
     if(!$db->isExistApplication()) {
         $lastId = $db->saveApplication();
-        die($lastId);
+        for($i = 0; $i < count($formData['office']); $i++) {
+            $office = ['appId' => $lastId, 'office' => $formData['office'][$i]];
+            $db->saveApprovalOnApply($office);
+        }
+
         if($db->saveApplication()) {
             move_uploaded_file($_FILES['attachment']['tmp_name'], $attachment);
             ?>

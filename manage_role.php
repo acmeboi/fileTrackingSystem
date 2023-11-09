@@ -44,7 +44,6 @@ $roles = $db->getAllRole();
                                             <option value="2"> Registra </option>
                                             <option value="3"> Burser </option>
                                             <option value="4"> Director Acadamic Planing </option>
-                                            <option value="5"> Chief Procurement Officer </option>
                                         </select>
                                     </div>
                                 </div>

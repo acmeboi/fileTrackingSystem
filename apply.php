@@ -145,19 +145,19 @@ include './header.php';
                                     <label style="display: block; font-weight: 600; font-size: 12px; text-align: left; padding: 20px 0;">Offices for approval</label>
                                     <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
                                         <div>
-                                            <input type="checkbox" id="rectory" name="rectory" value="1" />
+                                            <input type="checkbox" id="rectory" name="office[]" value="1" />
                                             <label for="rectory">Rectory</label>
                                         </div>
                                         <div>
-                                            <input type="checkbox" id="registry" name="registry" value="2" />
+                                            <input type="checkbox" id="registry" name="office[]" value="2" />
                                             <label for="registry">Registry</label>
                                         </div>
                                         <div>
-                                            <input type="checkbox" id="bursery" name="bursery" value="3" />
+                                            <input type="checkbox" id="bursery" name="office[]" value="3" />
                                             <label for="bursery">Bursery</label>
                                         </div>
                                         <div>
-                                            <input type="checkbox" id="directo_acadamic_planing" name="directo_acadamic_planing" value="4" />
+                                            <input type="checkbox" id="directo_acadamic_planing" name="office[]" value="4" />
                                             <label for="directo_acadamic_planing">Director Acadamic Planing</label>
                                         </div>
                                     </div>
