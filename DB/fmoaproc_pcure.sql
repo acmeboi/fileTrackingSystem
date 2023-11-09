@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 09, 2023 at 10:38 AM
+-- Generation Time: Nov 09, 2023 at 01:07 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -57,10 +57,6 @@ CREATE TABLE `application` (
   `mood` int(11) DEFAULT NULL,
   `staffId` int(11) DEFAULT NULL,
   `status` int(11) DEFAULT 0,
-  `sup2` int(11) DEFAULT 0,
-  `sup3` int(11) DEFAULT 0,
-  `sup4` int(11) DEFAULT 0,
-  `sup5` int(11) DEFAULT 0,
   `date` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -68,9 +64,12 @@ CREATE TABLE `application` (
 -- Dumping data for table `application`
 --
 
-INSERT INTO `application` (`id`, `file_no`, `staff_name`, `email`, `phone`, `attachment`, `tender`, `mood`, `staffId`, `status`, `sup2`, `sup3`, `sup4`, `sup5`, `date`) VALUES
-(1, 'PS0001', 'Ahmed Usman', 'ahmed@gmail.com', '09041309482', './uploads/PS000110:03:08_An Android Application For Student Medical Help Complete.docx', 'Funding', 2, 1, 0, 0, 1, 1, 0, '2023-10-07 09:10:37'),
-(2, 'PS0002', 'Ahmed Usman', 'ahmed@gmail.com', '09041309488', './uploads/PS000221:25:44_IMG-20210708-WA0006.jpg', 'Funding', 2, 1, 0, 1, 1, 1, 1, '2023-11-08 21:25:44');
+INSERT INTO `application` (`id`, `file_no`, `staff_name`, `email`, `phone`, `attachment`, `tender`, `mood`, `staffId`, `status`, `date`) VALUES
+(1, 'PS0001', 'Ahmed Usman', 'ahmed@gmail.com', '09041309482', './uploads/PS000110:03:08_An Android Application For Student Medical Help Complete.docx', 'Funding', 2, 1, 0, '2023-10-07 09:10:37'),
+(2, 'PS0002', 'Ahmed Usman', 'ahmed@gmail.com', '09041309488', './uploads/PS000221:25:44_IMG-20210708-WA0006.jpg', 'Funding', 2, 1, 0, '2023-11-08 21:25:44'),
+(3, 'P003', 'Djhjkdhjkdhj', 'sjkdhsjkd@gmail.com', '08143856549', './uploads/P00310:58:46_IMG-20210708-WA0006.jpg', 'JHjhjdhj', 2, 1, 0, '2023-11-09 10:58:46'),
+(4, 'P0033', 'Jhsjkhkjhjs', 'skjsjh@gmail.com', '08143856549', './uploads/P003311:18:55_IMG-20210708-WA0006.jpg', 'Funding', 2, 1, 0, '2023-11-09 11:18:55'),
+(5, 'P0033', 'Jhsjkhkjhjs', 'skjsjh@gmail.com', '08143856549', './uploads/P003311:18:55_IMG-20210708-WA0006.jpg', 'Funding', 2, 1, 0, '2023-11-09 11:18:55');
 
 -- --------------------------------------------------------
 
@@ -85,6 +84,15 @@ CREATE TABLE `approval` (
   `comment` text DEFAULT NULL,
   `status` int(2) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `approval`
+--
+
+INSERT INTO `approval` (`id`, `appId`, `office`, `comment`, `status`) VALUES
+(1, 4, '1', NULL, 1),
+(2, 4, '2', NULL, 0),
+(3, 4, '4', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -229,13 +237,13 @@ ALTER TABLE `admins`
 -- AUTO_INCREMENT for table `application`
 --
 ALTER TABLE `application`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `approval`
 --
 ALTER TABLE `approval`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `department`
