@@ -4,11 +4,10 @@
     
     $formData = filter_input_array(INPUT_POST);
     $roleRanks = array(
-        '1' => "Officer 1",
-        '2' => "Ass. Director",
-        '3' => "Deputy Director",
-        '4' => "Director",
-        '5' => "Permanent Secretary"
+        '1' => "Rector",
+        '2' => "Registra",
+        '3' => "Burser",
+        '4' => "Director Acadamic Planing",
     );
     $formData['roleTitle'] = $roleRanks[$formData['roleNumber']];
     $db->setParameter($formData);

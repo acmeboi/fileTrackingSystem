@@ -7,9 +7,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
         <meta name="author" content="">
-        <link rel="icon" href="images/favicon.ico">
+        <link rel="icon" href="images/logo.png">
 
-        <title>Procurement System </title>
+        <title>File Tracking System </title>
         <!-- Vendors Style-->
         <?php include './stylesheet.php'; ?>
     </head>
@@ -36,9 +36,9 @@
 
                                 <div class="content-top-agile p-20 pb-0">
                                     <div class="logo-lg">
-                                        <span class="light-logo"><img src="images/acc.png" alt="logo"></span>
+                                        <span class="light-logo"><img src="images/acc.png" style="width: 250px; height: 180px;" alt="logo"></span>
                                     </div>
-                                    <p class="mb-0 text-fade">Sign in to continue to Procurement System.</p>							
+                                    <p class="mb-0 text-fade">Sign in to continue to File Tracking System.</p>							
                                 </div>
                                 <div class="p-40">
                                     <form class="form-horizontal form-element" role="form" action="check_login.php" method="post">
@@ -50,7 +50,7 @@
                                         </div>
                                         <div class="form-group">
                                             <div class="input-group mb-3">
-                                                <span class="input-group-text  bg-transparent"><i class="text-fade ti-lock"></i></span>
+                                                <span class="input-group-text  bg-transparent"><i class="text-fade fa fa-lock"></i></span>
                                                 <input type="password" class="form-control ps-15 bg-transparent" placeholder="Password" name="password" required />
                                             </div>
                                         </div>

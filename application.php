@@ -80,6 +80,13 @@ $applications = $db->getAllNewApplications($role);
                                                 <td>
                                                     <div class="d-flex align-items-center justify-content-between">
                                                         <?php
+                                                            if($statusResponse->status == 1) {
+                                                                ?>
+                                                                <a class="btn btn-primary btn-sm" href="final_approval.php?id=<?= $rows['id'] ?>" onclick="return confirm('Are you sure to make a final approval')">Final Approval</a>
+                                                                <?php
+                                                            } 
+                                                        ?>
+                                                        <?php
                                                             if($statusResponse->office == $role && $statusResponse->status == 0) {
                                                                 ?>
                                                                 <a class="btn btn-success btn-sm" href="approve_application.php?id=<?= $statusResponse->id ?>" onclick="return confirm('Are you sure to approve this request')">Approve</a>

@@ -27,37 +27,14 @@ $next = 'sup'.$role;
                                 <ul class="nav nav-pills bg-nav-pills nav-fill">
                                     <li class="nav-item b-1">
                                         <a class="nav-link text-center" href="#">
-                                            <?= $role < 2 ? count($db->getAllNewApplications()) : 
-                                            ($role > 5 ? count($db->getAllNewApplications()) :
-                                            count($db->getNewApplications($previous, $next))); 
+                                            <?= count($db->getNewApplications()) 
                                             ?>
                                             <br> Applications</a>
                                     </li>
                                     <li class="nav-item b-1">
                                         <a class="nav-link text-center" href="#"> 
-                                            <?= $role < 2 ? count($db->getAllApplicationsUnderRewiew()) :
-                                            ($role > 5 ? count($db->getAllApplicationsUnderRewiew()) :
-                                            count($db->getApplicationsUnderRewiew($previous, $next))); 
-                                            ?>
-                                            <br> Under Review
-                                        </a>
-                                    </li>
-                                    <li class="nav-item b-1">
-                                        <a class="nav-link text-center" href="#"> 
-                                            <?= $role < 2 ? count($db->getAllApplicationsApproved()) :
-                                            ($role > 5 ? count($db->getAllApplicationsApproved()) :
-                                            count($db->getApplicationsApproved($next))); 
-                                            ?>
+                                            <?= count($db->getAllApplicationsApproved()) ?>
                                             <br> Approved
-                                        </a>
-                                    </li>
-                                    <li class="nav-item b-1">
-                                        <a class="nav-link disabled text-center" href="#" tabindex="-1" aria-disabled="true">
-                                            <?= $role < 2 ? count($db->getAllApplicationsReject()) :
-                                            ($role > 5 ? count($db->getAllApplicationsReject()) :
-                                            count($db->getApplicationsReject($previous, $next))); 
-                                            ?>
-                                            <br> Rejected
                                         </a>
                                     </li>
                                 </ul>

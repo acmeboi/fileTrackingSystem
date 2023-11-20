@@ -136,7 +136,7 @@ class DB
         $Query = $this->con->prepare("SELECT application.* 
     FROM application 
     LEFT JOIN approval ON application.id = approval.appId 
-    WHERE application.status <= 1 AND approval.office = :office");
+    WHERE application.status = 0 AND approval.office = :office");
 
         $Query->execute(['office' => $role]);
         $result = $Query->fetchAll(PDO::FETCH_ASSOC);
@@ -144,9 +144,9 @@ class DB
         return $result;
     }
 
-    public function getNewApplications($previous, $next)
+    public function getNewApplications()
     {
-        $Query = $this->con->prepare("SELECT * FROM `application` WHERE ($previous > 0 AND $next < 1 AND `status` = 0) OR (`sup4` < 1 AND `mood` = 1) OR ($previous > 0 AND $next < 1 AND `mood` = 1)");
+        $Query = $this->con->prepare("SELECT * FROM `application` WHERE `status` = 0");
         $Query->execute();
         return $Query->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -167,7 +167,7 @@ class DB
 
     public function getAllApplicationsApproved()
     {
-        $Query = $this->con->prepare("SELECT * FROM `application` WHERE `sup5` > 0 AND `status` < 1");
+        $Query = $this->con->prepare("SELECT * FROM `application` WHERE `status` = 1");
         $Query->execute();
         return $Query->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -277,6 +277,14 @@ class DB
         return $Query ? true : false;
     }
 
+    public function finalApproveApplication()
+    {
+        $this->params = $this->getParameter();
+        $Query = $this->con->prepare("UPDATE `application` SET `status` = 1 WHERE `id`=:id");
+        $Query->execute($this->params);
+        return $Query ? true : false;
+    }
+
     public function saveComment()
     {
         $this->params = $this->getParameter();
@@ -335,7 +343,7 @@ class DB
             "2" => 'File currently in Registra office',
             "3" => 'File currently in Burser office',
             "4" => 'File currently in Director Acadamic Planing office',
-            "10" => "Finished and File Returned main office"
+            "10" => "Completed"
         ][$num];
     }
 
